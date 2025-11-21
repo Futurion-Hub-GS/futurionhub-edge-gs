@@ -1,0 +1,5 @@
+# Bibliotecas principais para o Dashboard
+streamlit
+pandas
+matplotlib
+requests

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "author": "futurionhub",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp32",
+      "top": 50,
+      "left": 50
+    }
+  ],
+  "connections": [],
+  "serialMonitor": {
+    "display": "always",
+    "newline": "lf",
+    "convertEol": false
+  }
+}
