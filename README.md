@@ -6,86 +6,89 @@
 
 ## 1. Descrição Geral do Projeto
 
-O módulo **FuturionHub — IoT Edge** demonstra uma arquitetura educacional baseada em FIWARE para envio e análise de telemetria IoT no contexto do Futuro do Trabalho.
+O módulo **FuturionHub — IoT Edge** demonstra como dispositivos IoT podem integrar-se com plataformas corporativas modernas, gerando telemetria relevante para análise de comportamento e produtividade no contexto do Futuro do Trabalho.
 
-Este módulo simula o fluxo completo:
-- Dispositivo IoT (ESP32)
-- FIWARE (IoT Agent, Orion, STH-Comet, MongoDB)
-- Dashboard analítico em Python
-- Eventos da plataforma FuturionHub (LoginEvent e MoodEvent)
+Este módulo simula a conexão entre:
 
-Embora o modelo funcional completo seja possível, este repositório apresenta uma **demonstração arquitetural** para fins educacionais.
+- Dispositivo IoT ESP32  
+- FIWARE (IoT Agent, Orion Context Broker, STH-Comet)  
+- Azure VM  
+- Dashboard Python  
+- Plataforma FuturionHub (Web)
 
-![Hardware](./assets/esp32_futurion.png)
+O objetivo é recriar, de forma educacional e demonstrativa, o fluxo real de dados entre hardware, middleware e aplicações de análise.
 
+![Arquitetura](./assets/esp32_futurion.png)
 ---
 
-## 2. Objetivo do Módulo
+## 2. Objetivo do Módulo IoT
 
-A solução demonstra como dados de interação do colaborador podem ser enviados por um dispositivo IoT e armazenados no FIWARE para análise.
+O sistema é responsável por demonstrar como eventos de plataforma (como login e humor do usuário) podem ser coletados, enviados e processados por uma arquitetura FIWARE.
 
-Eventos simulados:
+O dispositivo IoT simula:
 
-### 2.1. LoginEvent
-Representa acessos do usuário à plataforma.
+### 2.1. LoginEvent  
+Representa momentos de acesso do usuário à plataforma digital.
 
+Exemplo:
 ```json
 {
   "username": "usuario",
   "timestamp": "2025-11-21T12:00:00"
 }
-2.2. MoodEvent
-Estado emocional do usuário, voltado para saúde mental e produtividade.
 
-json
-Copiar código
+2.2. MoodEvent
+
+Registra o estado de humor do usuário, parte do pilar de bem-estar da plataforma.
+
 {
   "username": "usuario",
-  "mood": "neutro",
+  "mood": "bem",
   "timestamp": "2025-11-21T12:05:00"
 }
-Estes dados alimentam o Dashboard de Análise.
 
 3. Arquitetura da Solução
+!(./assets/Arquitetura_futurionhub.png)
+A solução segue o padrão FIWARE com três camadas distintas:
 
-![Arquitetura](./assets/Arquitetura_futurionhub.png)
+3.1. Camada IoT (Edge) — ESP32
 
-3.1. Visão Geral
-O sistema segue uma arquitetura FIWARE com três camadas:
+Simulação no Wokwi
 
-css
-Copiar código
-[ ESP32 ] → [ MQTT Broker ] → [ IoT Agent ] → [ Orion ] → [ STH-Comet ] → [ MongoDB ]
-                                                           ↓
-                                                    [ Dashboard ]
-4. Componentes da Arquitetura
-4.1. IoT Edge (ESP32)
-Executa firmware simulando envio de LoginEvent e MoodEvent.
+Envio periódico de LoginEvent e MoodEvent
 
-Publica mensagens MQTT.
+Comunicação via MQTT
 
-Integrado ao IoT Agent (MQTT → NGSI-v2 → Orion).
+Integração com IoT Agent (MQTT → NGSI-v2)
 
-4.2. Backend (FIWARE)
-Componente	Porta	Função
-Mosquitto MQTT Broker	1883	Recebimento de telemetria do ESP32
-IoT Agent MQTT	4041	Tradução MQTT para NGSI-v2
-Orion Context Broker	1026	Estado atual das entidades
-STH-Comet	8666	Histórico (séries temporais)
-MongoDB	27017	Banco de dados Mongo
+3.2. Camada Backend (Cloud / FIWARE / Azure)
 
-4.3. Dashboard (Python Streamlit)
-Exibe métricas analíticas:
+Hospedada em uma máquina virtual Ubuntu executando:
+
+| Componente            | Porta | Função                           |
+| --------------------- | ----- | -------------------------------- |
+| Mosquitto MQTT Broker | 1883  | Recebe telemetria do ESP32       |
+| IoT Agent MQTT        | 4041  | Tradução MQTT/NGSI-v2            |
+| Orion Context Broker  | 1026  | Estado atual das entidades       |
+| STH-Comet             | 8666  | Registro histórico (time series) |
+| MongoDB               | 27017 | Banco de dados do Orion e do STH |
+
+3.3. Camada Application (Dashboard e Frontend)
+
+Dashboard Python (Streamlit)
+
+Geração de gráficos:
 
 Média de humor
 
 Evolução temporal do humor
 
-Logins por hora
+Logins por hora (histograma)
 
-5. Estrutura do Repositório
-bash
-Copiar código
+Integração com a plataforma FuturionHub (Web)
+
+4. Estrutura do Repositório
+
 /
 ├── backend-dashboard/
 │   ├── dashboard.py
@@ -99,93 +102,104 @@ Copiar código
 │   └── esp32_futurion.ino
 │
 └── README.md
-6. Funcionamento do IoT (ESP32)
-O firmware simula o envio periódico de dados:
 
-json
-Copiar código
+5. Funcionamento do ESP32 (Simulado)
+
+O ESP32 conecta-se ao WiFi e ao broker MQTT na Azure.
+Ele envia periodicamente dados simulados em formato JSON compatível com o IoT Agent.
+
+Exemplo de telemetria enviada:
+
 {
   "username": "breno",
-  "mood": "bem",
+  "mood": "neutro",
   "timestamp": "2025-11-21T13:00:00"
 }
-Esses dados passam por:
 
-nginx
-Copiar código
-ESP32 MQTT → IoT Agent → Orion → STH-Comet
-7. Instalação e Execução
-7.1. Backend — FIWARE
-bash
-Copiar código
-sudo apt update
-sudo apt install docker.io docker-compose -y
+O IoT Agent converte e publica no Orion, que imediatamente registra o dado no histórico via STH-Comet.
+
+6. Instalação e Execução
+6.1. Backend (FIWARE)
+
+- Criar VM Linux na Azure
+
+- Instalar Docker e Docker Compose
+
+- Clonar e iniciar o FIWARE:
 
 git clone https://github.com/fabiocabrini/fiware.git
 cd fiware
 sudo docker-compose up -d
-Abrir portas na Azure:
+
+Liberar portas no NSG:
+
 1883
+
 4041
+
 1026
+
 8666
+
 27017
-8050
-Importar collection no Postman:
-configuracao-postman/futurionhub_FIWARE.json
 
-7.2. IoT Device — Wokwi
-Abrir dispositivo-iot/diagram.json
+Criar no Postman (collection já inclusa no repo):
 
-Abrir esp32_futurion.ino
+Service Group
 
-Configurar endereço do broker MQTT
+Device
 
-Iniciar simulação
+Entity Template
 
-7.3. Dashboard Python
+Subscriptions
+
+2️⃣ Dispositivo IoT (Wokwi)
+
+Abrir:
+dispositivo-iot/diagram.json
+esp32_futurion.ino
+
+Rodar simulação → o console mostrará:
+Enviando LoginEvent...
+Enviando MoodEvent...
+
+3️⃣ Dashboard Python
+
 Instalar dependências:
-
-bash
-Copiar código
 pip install -r backend-dashboard/requirements.txt
-Executar:
 
-bash
-Copiar código
+Rodar:
 streamlit run dashboard.py
-O dashboard exibirá:
 
-Evolução dos registros de humor
+Abrirá automaticamente com:
 
-Média de humor
+✔ Login por hora
+![](./assets/grafico_logins.png)
+✔ Média de humor
+![](./assets/grafico_humor.png)
+✔ Linha de evolução emocional
+📊 7. Resultados Obtidos (PoC Demonstrativa)
 
-![Humor](./assets/grafico_humor.png)
+Os gráficos gerados mostram, a partir dos dados simulados:
 
-Logins por hora
+⭐ Média de humor
 
-![Login](./assets/grafico_logins.png)
+Representa o estado emocional médio dos colaboradores.
 
-8. Resultados Demonstrativos
-A partir dos dados simulados pelo ESP32, o Dashboard faz a análise:
+⭐ Estatísticas temporais
 
-Relação entre humor e horários do dia
+Mostra a evolução, simulada, dos registros ao longo do tempo.
 
-Frequência de login
+⭐ Logins por hora
 
-Tendências emocionais
+Demonstra o comportamento de acesso à plataforma.
 
-Visualização estatística para insights de RH
-
-O fluxo demonstrativo é equivalente ao de um sistema produtivo.
-
-
-👥 9. Equipe de Desenvolvimento
+👥 8. Equipe de Desenvolvimento
 
 Breno Gonçalves Báo — RM 564037
 Arthur Araújo Tenório — RM 562272
 
-📄 10. Licença
+📄 9. Licença
 
 Uso educacional.
 Este projeto simula um ecossistema corporativo real para fins de aprendizado de IoT + FIWARE + Dashboard.
