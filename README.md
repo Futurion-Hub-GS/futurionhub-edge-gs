@@ -18,8 +18,7 @@ Este módulo simula a conexão entre:
 
 O objetivo é recriar, de forma educacional e demonstrativa, o fluxo real de dados entre hardware, middleware e aplicações de análise.
 
-![Arquitetura](./assets/esp32_futurion.png)
----
+<img width="462" height="490" alt="esp32_futurion" src="https://github.com/user-attachments/assets/584fd174-7278-482e-94c5-8c5dc4d35d39" />
 
 ## 2. Objetivo do Módulo IoT
 
@@ -31,7 +30,7 @@ O dispositivo IoT simula:
 Representa momentos de acesso do usuário à plataforma digital.
 
 Exemplo:
-```json
+json
 {
   "username": "usuario",
   "timestamp": "2025-11-21T12:00:00"
@@ -48,7 +47,9 @@ Registra o estado de humor do usuário, parte do pilar de bem-estar da plataform
 }
 
 3. Arquitetura da Solução
-!(./assets/Arquitetura_futurionhub.png)
+<img width="962" height="931" alt="arquitetura_futurion" src="https://github.com/user-attachments/assets/6a69a2b7-be07-4116-b32b-8edbf63dcc19" />
+
+
 A solução segue o padrão FIWARE com três camadas distintas:
 
 3.1. Camada IoT (Edge) — ESP32
