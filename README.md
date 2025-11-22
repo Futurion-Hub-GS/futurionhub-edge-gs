@@ -2,6 +2,10 @@
 ### Global Solution — Edge Computing & Computer Systems  
 ### FIAP — O Futuro do Trabalho
 
+🔗 Vídeo explicativo no YouTube: [Clique aqui para abrir](https://youtu.be/9CZD_QjyuMo?si=57XU-pgYdixBE24L)
+
+🔗 Projeto no Wokwi: [Clique aqui para abrir](https://wokwi.com/projects/448277332200291329)
+
 ---
 
 ## 1. Descrição Geral do Projeto
